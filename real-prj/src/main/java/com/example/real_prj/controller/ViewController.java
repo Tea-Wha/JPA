@@ -25,20 +25,40 @@ public class ViewController {
         return viewService.getMemberList();
     }
 
+//    @GetMapping("/all")
+//    public ResponseEntity<List<MemberRestDto>> memberList(){
+//        return ResponseEntity.ok(viewService.getMemberList());
+//    }
+
     @PostMapping("/detail")
     public MemberRestDto memberDetail(@RequestBody String email){
         return viewService.getMemberDetail(email);
     }
+
+//    @GetMapping("/{email}")
+//    public ResponseEntity<MemberRestDto> memberDetail(@PathVariable String email){
+//        return ResponseEntity.ok(viewService.getMemberDetail(email));
+//    }
 
     @PostMapping("/delete")
     public boolean memberDelete(@RequestBody String email){
         return viewService.deleteMember(email);
     }
 
+//    @DeleteMapping("/{email}")
+//    public ResponseEntity<Boolean> memberDelete(@PathVariable String email){
+//        return ResponseEntity.ok(viewService.deleteMember(email));
+//    }
+
     @PostMapping("/modify")
     public Boolean memberModify(@RequestBody MemberReqDto memberReqDto){
         return viewService.modifyMember(memberReqDto);
     }
+
+//    @PutMapping("/modify")
+//    public ResponseEntity<Boolean> memberModify(@RequestBody MemberReqDto memberReqDto){
+//        return ResponseEntity.ok(viewService.modifyMember(memberReqDto));
+//    }
 
 
 }
