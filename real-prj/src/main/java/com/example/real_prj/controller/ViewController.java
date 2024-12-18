@@ -1,5 +1,6 @@
 package com.example.real_prj.controller;
 
+import com.example.real_prj.dto.MemberReqDto;
 import com.example.real_prj.dto.MemberRestDto;
 import com.example.real_prj.entity.Member;
 import com.example.real_prj.service.ViewService;
@@ -22,6 +23,21 @@ public class ViewController {
     @GetMapping("/all")
     public List<MemberRestDto> memberList(){
         return viewService.getMemberList();
+    }
+
+    @PostMapping("/detail")
+    public MemberRestDto memberDetail(@RequestBody String email){
+        return viewService.getMemberDetail(email);
+    }
+
+    @PostMapping("/delete")
+    public boolean memberDelete(@RequestBody String email){
+        return viewService.deleteMember(email);
+    }
+
+    @PostMapping("/modify")
+    public Boolean memberModify(@RequestBody MemberReqDto memberReqDto){
+        return viewService.modifyMember(memberReqDto);
     }
 
 

@@ -22,7 +22,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.kh.real_prj"))
+                .apis(RequestHandlerSelectors.basePackage("com.example.real_prj"))
                 .paths(PathSelectors.any())
                 .build();
     }

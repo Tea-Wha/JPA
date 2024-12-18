@@ -77,3 +77,7 @@ public class ViewService {
         return memberRestDto;
     }
 }
+// 1. POST MAN으로 회원 존재여부 확인, 회원가입, 로그인
+// 2. 회원 전체 조회 및 회원 이메일 조회 만들기 (POST MAN)
+// 3. 스웨거 등록 후 회원 존재여부 확인, 회원가입, 로그인, 회원 전체조회, 개별 회원 조회, 회원 삭제
+// 4. MemberController : 회원 전체 조회, 개별 회원 조회, 회원 정보 수정, 회원 삭제
