@@ -82,7 +82,17 @@ class ItemRepositoryTest {
     @DisplayName("가격 내림차순 정렬 조회")
     public void findAllByOrderByPriceAscTest(){
         this.createItemTest(); // 10개의 상품을 생성
-        List<Item> itemList = itemRepository.findAllByOrderByPriceAsc();
+        List<Item> itemList = itemRepository.findAllByOrderByPriceDesc();
+        for(Item item : itemList){
+            log.info("가격 내림차순 정렬 조회 : {}",item);
+        }
+    }
+
+    @Test
+    @DisplayName("가격 내림차순 정렬 조회")
+    public void findByPriceOrderByDesc(){
+        this.createItemTest(); // 10개의 상품을 생성
+        List<Item> itemList = itemRepository.findByOrderByPriceDesc();
         for(Item item : itemList){
             log.info("가격 내림차순 정렬 조회 : {}",item);
         }
@@ -105,6 +115,28 @@ class ItemRepositoryTest {
         List<Item> itemList = itemRepository.findByItemNameAndPrice("테스트 상품5",4000);
         for(Item item : itemList){
             log.info("이름 AND 가격 조회 테스트: {}",item);
+        }
+    }
+
+    // JPQL 테스트
+    @Test
+    @DisplayName("특정 설명 기준 가격 정렬")
+    public void findByItemDetail(){
+        this.createItemTest(); // 10개의 상품을 생성
+        List<Item> itemList = itemRepository.findByItemDetail("상세 설명");
+        for(Item item : itemList){
+            log.info("특정 설명 기준 가격 정렬 테스트: {}",item);
+        }
+    }
+
+    // Native Query 테스트
+    @Test
+    @DisplayName("특정 설명 기준 가격 정렬")
+    public void findByItemDetailNative(){
+        this.createItemTest(); // 10개의 상품을 생성
+        List<Item> itemList = itemRepository.findByItemDetailNative("상세 설명");
+        for(Item item : itemList){
+            log.info("특정 설명 기준 가격 정렬 테스트: {}",item);
         }
     }
 
