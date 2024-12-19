@@ -1,20 +1,17 @@
 package com.example.real_prj.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberRestDto {
+public class BoardReqDto {
+    private String title;
+    private String content;
+    private String imgPath;
     private String email;
-    private String name;
-    private String imagePath;
-    private LocalDateTime regDate;
 }

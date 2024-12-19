@@ -1,7 +1,7 @@
 package com.example.real_prj.service;
 
 import com.example.real_prj.dto.MemberReqDto;
-import com.example.real_prj.dto.MemberRestDto;
+import com.example.real_prj.dto.MemberResDto;
 import com.example.real_prj.entity.Member;
 import com.example.real_prj.repository.MemberRepository;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,18 +18,18 @@ public class ViewService {
     private final MemberRepository memberRepository;
 
     // 회원 전체 조회
-    public List<MemberRestDto> getMemberList(){
+    public List<MemberResDto> getMemberList(){
         // DB로 부터 모든 회원 정보를 Member Entity 객체로 읽어옴
         List<Member> members = memberRepository.findAll();
         // 프론트엔드에 정보를 전달하기 위해 DTO List를 생성
-       List<MemberRestDto> memberRestDtoList = new ArrayList<>();
+       List<MemberResDto> memberResDtoList = new ArrayList<>();
        for (Member member : members){
-           memberRestDtoList.add(convertEntityToDto(member));
+           memberResDtoList.add(convertEntityToDto(member));
        }
-       return memberRestDtoList;
+       return memberResDtoList;
     }
     // 회원 상세 조회
-    public MemberRestDto getMemberDetail(String email){
+    public MemberResDto getMemberDetail(String email){
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()-> new RuntimeException("해당회원이 존재하지 않습니다."));
         return convertEntityToDto(member);
@@ -68,13 +67,13 @@ public class ViewService {
 
 
     // Member Entity => MemberRestDto
-    private MemberRestDto convertEntityToDto(Member member){
-        MemberRestDto memberRestDto = new MemberRestDto();
-        memberRestDto.setEmail(member.getEmail());
-        memberRestDto.setName(member.getName());
-        memberRestDto.setRegDate(member.getRegDate());
-        memberRestDto.setImagePath(member.getImgPath());
-        return memberRestDto;
+    private MemberResDto convertEntityToDto(Member member){
+        MemberResDto memberResDto = new MemberResDto();
+        memberResDto.setEmail(member.getEmail());
+        memberResDto.setName(member.getName());
+        memberResDto.setRegDate(member.getRegDate());
+        memberResDto.setImagePath(member.getImgPath());
+        return memberResDto;
     }
 }
 // 1. POST MAN으로 회원 존재여부 확인, 회원가입, 로그인

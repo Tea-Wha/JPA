@@ -1,13 +1,10 @@
 package com.example.real_prj.controller;
 
 import com.example.real_prj.dto.MemberReqDto;
-import com.example.real_prj.dto.MemberRestDto;
-import com.example.real_prj.entity.Member;
+import com.example.real_prj.dto.MemberResDto;
 import com.example.real_prj.service.ViewService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +18,7 @@ public class ViewController {
     private final ViewService viewService;
 
     @GetMapping("/all")
-    public List<MemberRestDto> memberList(){
+    public List<MemberResDto> memberList(){
         return viewService.getMemberList();
     }
 
@@ -31,7 +28,7 @@ public class ViewController {
 //    }
 
     @PostMapping("/detail")
-    public MemberRestDto memberDetail(@RequestBody String email){
+    public MemberResDto memberDetail(@RequestBody String email){
         return viewService.getMemberDetail(email);
     }
 
