@@ -20,7 +20,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/")
-    public Integer boardEntirePage(@RequestParam(defaultValue = "0") int page,
+    public int boardEntirePage(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size){
         return boardService.getBoardPageCount(page, size);
     }
@@ -62,7 +62,7 @@ public class BoardController {
 //    }
 
     @PostMapping("/search")
-    public List<BoardResDto> boardSearch(@RequestBody String keyword){
+    public List<BoardResDto> boardSearch(@RequestParam String keyword){
         return boardService.searchBoard(keyword);
     }
 
@@ -83,13 +83,13 @@ public class BoardController {
 //        return ResponseEntity.ok(boardService.pagingBoardList(page, size));
 //    }
 
-    @PostMapping("/delete")
-    public boolean boardDelete(@RequestBody Long id, @RequestBody String email){
+    @PostMapping("/delete/{id}")
+    public boolean boardDelete(@PathVariable Long id, @RequestParam String email){
         return boardService.boardDelete(id, email);
     }
 
-//    @PostMapping("/delete")
-//    public ResponseEntity<Boolean> boardDeleteRes(@RequestBody Long id, @RequestBody String email){
+//    @PostMapping("/delete/{id}")
+//    public ResponseEntity<Boolean> boardDeleteRes(@PathVariable Long id, @RequestParam String email){
 //        return ResponseEntity.ok(boardService.boardDelete(id, email));
 //    }
 
@@ -104,12 +104,12 @@ public class BoardController {
 //    }
 
     @PostMapping("/search2")
-    public List<BoardResDto> boardSearch2(@RequestBody String title, @RequestBody String content){
+    public List<BoardResDto> boardSearch2(@RequestParam String title, @RequestParam String content){
         return boardService.searchTitleOrContent(title, content);
     }
 
 //    @PostMapping("/search2")
-//    public ResponseEntity<List<BoardResDto>> boardSearch2Res(@RequestBody String title, @RequestBody String content){
+//    public ResponseEntity<List<BoardResDto>> boardSearch2Res(@RequestParam String title, @RequestParam String content){
 //        return ResponseEntity.ok(boardService.searchTitleOrContent(title, content));
 //    }
 }
