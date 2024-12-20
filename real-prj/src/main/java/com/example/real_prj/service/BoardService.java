@@ -13,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -70,6 +72,7 @@ public class BoardService {
         return boardResDtoList;
     }
     // 게시글 페이지 수 조회
+    // 게시글 진입 시 한번만 불려와지면 됨
     public int getBoardPageCount(int page, int size){
         PageRequest pageRequest = PageRequest.of(page, size);
         return boardRepository.findAll(pageRequest).getTotalPages();
@@ -82,6 +85,66 @@ public class BoardService {
         // 어떤 부분에서 처리를 해야 할지 고민하는 것이 필요
         Pageable pageable = PageRequest.of(page, size);
         List<Board> boards = boardRepository.findAll(pageable).getContent();
+        List<BoardResDto> boardResDtoList = new ArrayList<>();
+        for (Board board : boards){
+            boardResDtoList.add(convertEntityToDto(board));
+        }
+        return boardResDtoList;
+    }
+    
+    // 게시글 삭제
+    public boolean boardDelete(Long id, String email){
+        // 게시글 확인
+        try {
+            Board board = boardRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+            String boardAuth = board.getMember().getEmail();
+            if (boardAuth.equals(email)) {
+                boardRepository.delete(board);
+                return true;
+            } else {
+                log.error("게시글 삭제 권한이 없습니다.");
+                return false;
+            }
+        }
+        catch (Exception e){
+            log.error("게시글 삭제 실패 : {}", e.getMessage());
+            return false;
+        }
+    }
+    // 게시글 수정
+    public boolean modifyBoard(BoardReqDto boardReqDto, Long id){
+        // orElseThrow 를 사용하려면 Optional 이 붙어있어야 함
+        // findById(id) id 값에 대한 기본 findBy는 이미 Optional 설정값이 있어서
+        // orElseThrow()가 뜨는 것인가?
+        try {
+            Board board = boardRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+            // 비회원일 때는 어떻게 해야하는지에 관하여 생각해봐야함
+            String boardAuth = board.getMember().getEmail();
+            if (boardAuth.equals(boardReqDto.getEmail())) {
+                board.setTitle(boardReqDto.getTitle());
+                board.setContent(boardReqDto.getContent());
+                board.setImgPath(boardReqDto.getImgPath());
+                board.setRegDate(LocalDateTime.now());
+                boardRepository.save(board);
+                return true;
+            }
+            else{
+                log.error("게시글 수정 권한이 없습니다.");
+                return false;
+            }
+        }
+        catch (Exception e){
+            log.error("게시글 수정 실패 : {}", e.getMessage());
+            return false;
+        }
+    }
+    // 게시글 검색 (제목과 내용) (OR)
+    public List<BoardResDto> searchTitleOrContent(String title, String content){
+        List<Board> boards = Optional.ofNullable(boardRepository.findByTitleOrContentContaining(title, content))
+                .filter(list -> !list.isEmpty())
+                .orElseThrow(() -> new RuntimeException("해당 조건에 맞는 게시글이 존재하지 않습니다."));
         List<BoardResDto> boardResDtoList = new ArrayList<>();
         for (Board board : boards){
             boardResDtoList.add(convertEntityToDto(board));
