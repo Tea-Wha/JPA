@@ -5,6 +5,7 @@ import com.example.real_prj.dto.MemberResDto;
 import com.example.real_prj.service.ViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +34,14 @@ public class ViewController {
     }
 
 //    @GetMapping("/{email}")
-//    public ResponseEntity<MemberRestDto> memberDetail(@PathVariable String email){
+//    public ResponseEntity<MemberResDto> memberDetail(@PathVariable String email){
 //        return ResponseEntity.ok(viewService.getMemberDetail(email));
 //    }
+
+    @GetMapping("/board/{email}")
+    public ResponseEntity<MemberResDto> memberDetailBoards(@PathVariable String email){
+        return ResponseEntity.ok(viewService.getMemberDetailBoards(email));
+    }
 
     @PostMapping("/delete")
     public boolean memberDelete(@RequestBody String email){

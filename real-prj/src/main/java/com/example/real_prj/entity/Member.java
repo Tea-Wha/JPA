@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity // 해당 클래스가 Entity 임을 나타냄
 @Table(name="member") // Table 이름 지정, 테이블 이름은 소문자, 카멜 표기법은 -> 스네이크 표기법 변환됨
@@ -28,8 +30,11 @@ public class Member {
     @Column(name="image_path")
     private String imgPath;
     @PrePersist // JPA의 콜백 메서드로 엔티티가 저장되기 전에 실행, DB 데이터가 삽입 되기전에 자동 설정
-
     protected void onCreate() {
         this.regDate = LocalDateTime.now();
     }
+
+    // 게시글 목록에 대한 OneToMany
+    @OneToMany(mappedBy = "member")
+    private List<Board> boards = new ArrayList<>();
 }

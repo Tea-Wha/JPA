@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +20,6 @@ public class BoardResDto {
   private LocalDateTime regDate;
   private String email;
 
+  // 댓글 추가
+  private List<CommentResDto> comments;
 }

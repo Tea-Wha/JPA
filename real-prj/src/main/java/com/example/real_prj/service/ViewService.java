@@ -1,7 +1,11 @@
 package com.example.real_prj.service;
 
+import com.example.real_prj.dto.BoardResDto;
+import com.example.real_prj.dto.CommentResDto;
 import com.example.real_prj.dto.MemberReqDto;
 import com.example.real_prj.dto.MemberResDto;
+import com.example.real_prj.entity.Board;
+import com.example.real_prj.entity.Comment;
 import com.example.real_prj.entity.Member;
 import com.example.real_prj.repository.MemberRepository;
 import lombok.AllArgsConstructor;
@@ -33,6 +37,13 @@ public class ViewService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()-> new RuntimeException("해당회원이 존재하지 않습니다."));
         return convertEntityToDto(member);
+    }
+
+    // 회원 상세 조회 및 작성 게시글 조회
+    public MemberResDto getMemberDetailBoards(String email){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("해당회원이 존재하지 않습니다."));
+        return convertEntityToDtowBoards(member);
     }
 
     // 회원 정보 수정
@@ -74,6 +85,45 @@ public class ViewService {
         memberResDto.setRegDate(member.getRegDate());
         memberResDto.setImagePath(member.getImgPath());
         return memberResDto;
+    }
+
+    // Member Entity => MemberRestDto
+    private MemberResDto convertEntityToDtowoBoards(Member member){
+        MemberResDto memberResDto = new MemberResDto();
+        memberResDto.setEmail(member.getEmail());
+        memberResDto.setName(member.getName());
+        memberResDto.setRegDate(member.getRegDate());
+        memberResDto.setImagePath(member.getImgPath());
+        memberResDto.setBoards(new ArrayList<>());
+        return memberResDto;
+    }
+
+    // Member Entity => MemberRestDto
+    private MemberResDto convertEntityToDtowBoards(Member member){
+        MemberResDto memberResDto = new MemberResDto();
+        memberResDto.setEmail(member.getEmail());
+        memberResDto.setName(member.getName());
+        memberResDto.setRegDate(member.getRegDate());
+        memberResDto.setImagePath(member.getImgPath());
+
+        List<BoardResDto> boardResDtoList = new ArrayList<>();
+        List<Board> boards = member.getBoards();
+        for (Board board : boards){
+            boardResDtoList.add(convertEntityToDto(board));
+        }
+        memberResDto.setBoards(boardResDtoList);
+        return memberResDto;
+    }
+
+    private BoardResDto convertEntityToDto(Board board){
+        BoardResDto boardResDto = new BoardResDto();
+        boardResDto.setBoardId(board.getId());
+        boardResDto.setTitle(board.getTitle());
+        boardResDto.setContent(board.getContent());
+        boardResDto.setImgPath(board.getImgPath());
+        boardResDto.setRegDate(board.getRegDate());
+        boardResDto.setEmail(board.getMember().getEmail());
+        return boardResDto;
     }
 }
 // 1. POST MAN으로 회원 존재여부 확인, 회원가입, 로그인

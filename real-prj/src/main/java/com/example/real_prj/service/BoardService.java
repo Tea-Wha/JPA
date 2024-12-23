@@ -2,7 +2,9 @@ package com.example.real_prj.service;
 
 import com.example.real_prj.dto.BoardReqDto;
 import com.example.real_prj.dto.BoardResDto;
+import com.example.real_prj.dto.CommentResDto;
 import com.example.real_prj.entity.Board;
+import com.example.real_prj.entity.Comment;
 import com.example.real_prj.entity.Member;
 import com.example.real_prj.repository.BoardRepository;
 import com.example.real_prj.repository.MemberRepository;
@@ -25,7 +27,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     // 게시글 등록
-    @Transactional
+    @Transactional // 동시에 여러 게시글을 작성할 수 있다.
     public boolean saveBoard(BoardReqDto boardReqDto){
         try {
             // 프론트엔드에서 전달한 이메일로 회원 정보 확인 및 가져옴
@@ -52,13 +54,14 @@ public class BoardService {
                 .orElseThrow(()-> new RuntimeException("해당 게시글이 존재하지 않습니다."));
         return convertEntityToDto(board);
     }
+
     // 게시글 전체 조회
     public List<BoardResDto> findAllBoard(){
         List<Board> boards = boardRepository.findAll();
         List<BoardResDto> boardResDtoList = new ArrayList<>();
         for (Board board : boards){
             // convertEntityToDto를 통해서 BoardResDto로 반환 받아서 List에 추가
-            boardResDtoList.add(convertEntityToDto(board));
+            boardResDtoList.add(convertEntityToDtowoComments(board));
         }
         return boardResDtoList;
     }
@@ -87,7 +90,7 @@ public class BoardService {
         List<Board> boards = boardRepository.findAll(pageable).getContent();
         List<BoardResDto> boardResDtoList = new ArrayList<>();
         for (Board board : boards){
-            boardResDtoList.add(convertEntityToDto(board));
+            boardResDtoList.add(convertEntityToDtowoComments(board));
         }
         return boardResDtoList;
     }
@@ -152,6 +155,38 @@ public class BoardService {
         return boardResDtoList;
     }
     
+    // 댓글 목록 조회
+    public List<CommentResDto> commentViewAll(Long id){
+
+       try {
+           Board board = boardRepository.findById(id)
+                   .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+           List<CommentResDto> commentResDtoList = new ArrayList<>();
+           List<Comment> comments = board.getComments();
+           for (Comment comment : comments){
+               commentResDtoList.add(convertEntityToDto(comment));
+           }
+            return commentResDtoList;
+       }
+       catch (Exception e){
+           log.error("댓글 조회 실패 : {}", e.getMessage());
+           return null;
+       }
+    }
+
+    // 댓글 제외 DTO
+    private BoardResDto convertEntityToDtowoComments(Board board){
+        BoardResDto boardResDto = new BoardResDto();
+        boardResDto.setBoardId(board.getId());
+        boardResDto.setTitle(board.getTitle());
+        boardResDto.setContent(board.getContent());
+        boardResDto.setImgPath(board.getImgPath());
+        boardResDto.setRegDate(board.getRegDate());
+        boardResDto.setEmail(board.getMember().getEmail());
+        boardResDto.setComments(new ArrayList<>());
+        return boardResDto;
+    }
+    
 
     private BoardResDto convertEntityToDto(Board board){
         BoardResDto boardResDto = new BoardResDto();
@@ -161,6 +196,23 @@ public class BoardService {
         boardResDto.setImgPath(board.getImgPath());
         boardResDto.setRegDate(board.getRegDate());
         boardResDto.setEmail(board.getMember().getEmail());
+
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+        List<Comment> comments = board.getComments();
+        for (Comment comment : comments){
+            commentResDtoList.add(convertEntityToDto(comment));
+        }
+        boardResDto.setComments(commentResDtoList);
+
         return boardResDto;
+    }
+    private CommentResDto convertEntityToDto (Comment comment){
+        CommentResDto commentResDto = new CommentResDto();
+        commentResDto.setEmail(comment.getMember().getEmail());
+        commentResDto.setBoardId(comment.getBoard().getId());
+        commentResDto.setCommentId(comment.getCommentId());
+        commentResDto.setContent(comment.getContent());
+        commentResDto.setRegDate(comment.getRegDate());
+        return commentResDto;
     }
 }

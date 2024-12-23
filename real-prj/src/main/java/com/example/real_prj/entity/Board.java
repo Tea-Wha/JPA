@@ -8,6 +8,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="board")
@@ -36,4 +38,7 @@ public class Board {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "board") // 주인이 아님을 의미, 즉 객체를 참조만함
+    private List<Comment> comments = new ArrayList<>();
 }
