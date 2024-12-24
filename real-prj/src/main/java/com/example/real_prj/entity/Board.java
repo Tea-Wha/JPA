@@ -39,6 +39,19 @@ public class Board {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "board") // 주인이 아님을 의미, 즉 객체를 참조만함
+    // 영속성 전이 : 부모 엔티티의 상태 변화가 자식 엔티티에도 전이 되는 것
+    // 고아 객체 제거 : 부모와의 연관 관계가 끊어진 자식 엔티티를 자동으로 데이터베이스에서 제거하는 것
+    // 부모 쪽에서 관리하고 있는 (리스트 안에 있는) 자식 객체를 지운다면
+    // 실제 자식 객체가 지워짐 (주의해야 함)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true) // 주인이 아님을 의미, 즉 객체를 참조만함
     private List<Comment> comments = new ArrayList<>();
+
+    public void addComment(Comment comment){
+        comments.add(comment);
+        comment.setBoard(this);
+    }
+    public void removeComment(Comment comment){
+        comments.remove(comment);
+        comment.setBoard(null);
+    }
 }

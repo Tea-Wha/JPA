@@ -66,6 +66,7 @@ public class CommentService {
     }
 
     // 댓글 목록 조회
+    // 게시글 번호
     public List<CommentResDto> commentViewAll(Long id){
             Board board = boardRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다."));
@@ -75,6 +76,15 @@ public class CommentService {
                 commentResDtoList.add(convertEntityToDto(comment));
             }
             return commentResDtoList;
+    }
+
+    public List<CommentResDto> allComment(){
+        List<Comment> comments = commentRepository.findAll();
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+        for (Comment comment : comments){
+            commentResDtoList.add(convertEntityToDto(comment));
+        }
+        return commentResDtoList;
     }
 
     private CommentResDto convertEntityToDto (Comment comment){

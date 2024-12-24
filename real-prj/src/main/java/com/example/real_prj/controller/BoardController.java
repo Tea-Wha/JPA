@@ -3,6 +3,7 @@ package com.example.real_prj.controller;
 
 import com.example.real_prj.dto.BoardReqDto;
 import com.example.real_prj.dto.BoardResDto;
+import com.example.real_prj.dto.CommentReqDto;
 import com.example.real_prj.service.BoardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,4 +113,16 @@ public class BoardController {
 //    public ResponseEntity<List<BoardResDto>> boardSearch2Res(@RequestParam String title, @RequestParam String content){
 //        return ResponseEntity.ok(boardService.searchTitleOrContent(title, content));
 //    }
+    
+    // 댓글 추가
+    @PostMapping("/{boardId}/comments")
+    public ResponseEntity<Boolean> addComment(@PathVariable Long boardId, @RequestBody CommentReqDto commentReqDto){
+        return ResponseEntity.ok(boardService.addComment(boardId, commentReqDto));
+    }
+    
+    // 댓글 삭제
+    @DeleteMapping("/{boardId}/comments/{commentId}")
+    public ResponseEntity<Boolean> removeComment(@PathVariable Long boardId, @PathVariable Long commentId){
+        return ResponseEntity.ok(boardService.removeComment(boardId, commentId));
+    }
 }

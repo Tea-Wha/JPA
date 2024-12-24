@@ -35,6 +35,15 @@ public class Member {
     }
 
     // 게시글 목록에 대한 OneToMany
-    @OneToMany(mappedBy = "member")
+    // Many to one 쪽에서 참조한 키가 mappedBy에 들어가야함
+    // Member 쪽에서 여러 Board 를 받고 있음
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
+
+    // Member 쪽에서 작성한 Board 는 여러 댓글을 받고 있음
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentsboard = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentsmember = new ArrayList<>();
 }

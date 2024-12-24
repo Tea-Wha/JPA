@@ -2,11 +2,13 @@ package com.example.real_prj.service;
 
 import com.example.real_prj.dto.BoardReqDto;
 import com.example.real_prj.dto.BoardResDto;
+import com.example.real_prj.dto.CommentReqDto;
 import com.example.real_prj.dto.CommentResDto;
 import com.example.real_prj.entity.Board;
 import com.example.real_prj.entity.Comment;
 import com.example.real_prj.entity.Member;
 import com.example.real_prj.repository.BoardRepository;
+import com.example.real_prj.repository.CommentRepository;
 import com.example.real_prj.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
     // 게시글 등록
     @Transactional // 동시에 여러 게시글을 작성할 수 있다.
     public boolean saveBoard(BoardReqDto boardReqDto){
@@ -173,6 +176,59 @@ public class BoardService {
            return null;
        }
     }
+
+    @Transactional // RollBack
+    public boolean addComment(Long boardId, CommentReqDto commentReqDto) {
+        // id로 board 객체 가져오기
+        try {
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+            // email로 회원 객체 가져오기
+            Member member = memberRepository.findByEmail(commentReqDto.getEmail())
+                    .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
+            // Dto -> entity로 변환
+            Comment comment = new Comment();
+            comment.setBoard(board);
+            comment.setMember(member);
+            comment.setContent(commentReqDto.getContent());
+            board.addComment(comment);
+            boardRepository.save(board);
+            return true;
+        }
+        catch (Exception e){
+            log.error("댓글 추가 실패 : {}",e.getMessage());
+            return false;
+        }
+    }
+
+
+    // 삭제 부분의 권한 -> 댓글 작성자, 글 작성자(?), 관리자
+    @Transactional
+    public boolean removeComment(Long boardId, Long commentId) {
+        try {
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+            Comment targetComment = null;
+            for (Comment comment : board.getComments()) {
+                if (comment.getCommentId().equals(commentId)) {
+                    targetComment = comment;
+                    break;
+                }
+            }
+            if (targetComment == null) {
+                log.error("해당 댓글이 존재하지 않습니다.");
+                return false;
+            }
+            board.removeComment(targetComment);
+            boardRepository.save(board);
+            return true;
+        }
+        catch (Exception e){
+            log.error("댓글 삭제 실패 : {}", e.getMessage());
+            return false;
+        }
+    }
+
 
     // 댓글 제외 DTO
     private BoardResDto convertEntityToDtowoComments(Board board){

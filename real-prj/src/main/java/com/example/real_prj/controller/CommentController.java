@@ -33,5 +33,11 @@ public class CommentController {
     public List<CommentResDto> commentViewAll (@RequestParam Long id){
         return commentService.commentViewAll(id);
     }
+
+    // 전체 댓글 조회
+    @GetMapping("/allview")
+    public List<CommentResDto> allComment (){
+        return commentService.allComment();
+    }
 }
 
