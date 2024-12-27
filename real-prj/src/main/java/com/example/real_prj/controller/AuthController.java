@@ -2,6 +2,8 @@ package com.example.real_prj.controller;
 
 import com.example.real_prj.dto.LoginReqDto;
 import com.example.real_prj.dto.MemberReqDto;
+import com.example.real_prj.dto.MemberResDto;
+import com.example.real_prj.dto.TokenDto;
 import com.example.real_prj.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +26,14 @@ public class AuthController {
     }
     // 회원 가입
     @PostMapping("/signup")
-    public ResponseEntity<Boolean> signUp(@RequestBody MemberReqDto memberReqDto){
-        boolean isSuccess = authService.signUp(memberReqDto);
+    public ResponseEntity<MemberResDto> signUp(@RequestBody MemberReqDto memberReqDto){
+        MemberResDto isSuccess = authService.signUp(memberReqDto);
         return ResponseEntity.ok(isSuccess);
     }
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<Boolean> login(@RequestBody LoginReqDto loginReqDto){
-        boolean isSuccess = authService.login(loginReqDto);
+    public ResponseEntity<TokenDto> login(@RequestBody MemberReqDto memberReqDto){
+        TokenDto isSuccess = authService.login(memberReqDto);
         return ResponseEntity.ok(isSuccess);
     }
 

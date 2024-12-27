@@ -1,10 +1,8 @@
 package com.example.real_prj.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.real_prj.entity.Member;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MemberResDto {
     private String email;
     private String name;
@@ -20,4 +19,13 @@ public class MemberResDto {
     private LocalDateTime regDate;
 
     private List<BoardResDto> boards;
+
+    public static MemberResDto of(Member member) {
+        return MemberResDto.builder()
+                .name(member.getName())
+                .email(member.getEmail())
+                .imagePath(member.getImgPath())
+                .regDate(member.getRegDate())
+                .build();
+    }
 }

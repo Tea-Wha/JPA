@@ -1,6 +1,7 @@
 package com.example.real_prj.entity;
 
 
+import com.example.real_prj.constant.Authority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,9 +20,9 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO) // 기본키 생성 전략, JPA가 자동으로 생선 전략을 정함
     private Long id; // Primary Key
 
-    @Column(nullable = false, length = 50) // NOT NULL
+    @Column(nullable = false) // NOT NULL
     private String email;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String pwd;
     @Column(length = 50)
     private String name;
@@ -29,10 +30,10 @@ public class Member {
     private LocalDateTime regDate;
     @Column(name="image_path")
     private String imgPath;
-    @PrePersist // JPA의 콜백 메서드로 엔티티가 저장되기 전에 실행, DB 데이터가 삽입 되기전에 자동 설정
-    protected void onCreate() {
-        this.regDate = LocalDateTime.now();
-    }
+//    @PrePersist // JPA의 콜백 메서드로 엔티티가 저장되기 전에 실행, DB 데이터가 삽입 되기전에 자동 설정
+//    protected void onCreate() {
+//        this.regDate = LocalDateTime.now();
+//    }
 
     // 게시글 목록에 대한 OneToMany
     // Many to one 쪽에서 참조한 키가 mappedBy에 들어가야함
@@ -46,4 +47,17 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentsmember = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+    
+    @Builder // NoArgsConstructor가 있어야함
+    public Member(String email, String name, String pwd, String img, Authority authority){
+        this.email = email;
+        this.pwd = pwd;
+        this.name = name;
+        this.imgPath = img;
+        this.authority = authority;
+        this.regDate = LocalDateTime.now();
+    }
 }
